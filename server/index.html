@@ -1,0 +1,421 @@
+<html>
+<head>
+<meta charset="utf-8"> 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito&effect=shadow-multiple">
+<link rel="stylesheet" href="Nunito/static/Nunito-Medium.ttf">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Prompt&family=Wix+Madefor+Display:wght@700&display=swap" rel="stylesheet">
+
+<script type="text/javascript">
+	// fetch('http://192.168.0.14/sec/?pt=12&cmd=get', {mode: 'no-cors'})
+ //  .then((response) => console.log(response.data));
+
+
+let loadRooms = async function(){
+  try {
+  	const response = await fetch('/index.php', {mode: "no-cors", credentials: "include"});
+  	if (!response.ok) {
+  		console.log (response.ok);
+    	throw new Error('Ответ сети был не ok.');
+  	}
+  	const resp = await response.json();
+  	console.log (resp);
+
+
+		processTemperature(resp[0][0], 1);
+		processHumidity(resp[0][1], 1);
+		processCO2(resp[0][2], 1);
+
+
+		processTemperature(resp[1][0], 2);
+		processHumidity(resp[1][1], 2);
+		processCO2(resp[1][2], 2);
+
+		processTemperature(resp[2][0], 3);
+		processHumidity(resp[2][1], 3);
+
+
+  } catch (error) {
+  	console.log('Возникла проблема с вашим fetch запросом: ', error.message);
+  }
+}
+
+function processTemperature(val, room){
+
+	var elem = document.getElementById("temperature"+room);
+	elem.innerText = (parseFloat(val)).toFixed(1);
+	//console.log ((parseFloat(val)).toFixed(1));
+
+	val = parseInt(val);
+
+
+	elem = document.getElementById("temperature_back"+room);
+  // good
+	if (val >= 18 && val <= 26){
+			elem.className = "backdrop_none"
+	}
+	// warning
+	else if ( (val >= 10 && val < 18) || (val > 26 && val <= 33) ){
+		elem.className = "backdrop_warning"
+	}
+	// danger
+	else if ( val < 10 || val > 33 ){
+		elem.className = "backdrop_danger"
+	}
+	
+}
+
+function processHumidity(val, room){
+
+	var elem = document.getElementById("humidity"+room);
+	elem.innerText = parseInt(val);
+
+	val = parseInt(val);
+	//console.log (val);
+
+
+	elem = document.getElementById("humidity_back"+room);
+  // good
+	if (val >= 40 && val <= 60){
+			elem.className = "backdrop_none"
+	}
+	// warning
+	else if ( (val >= 20 && val < 40) || (val > 60 && val <= 70) ){
+		elem.className = "backdrop_warning"
+	}
+	// danger
+	else if ( val < 20 || val > 70 ){
+		elem.className = "backdrop_danger"
+	}
+}
+
+function processCO2(val, room){
+	var elem = document.getElementById("co2"+room);
+	elem.innerText = val;
+
+	val = parseInt(val);
+	//console.log (val);
+
+
+	elem = document.getElementById("co2_back"+room);
+  // good
+	if (val <= 1000){
+			elem.className = "backdrop_none"
+	}
+	// warning
+	else if ( val > 1000 && val < 2000 ){
+		elem.className = "backdrop_warning"
+	}
+	// danger
+	else if ( val > 2000 ){
+		elem.className = "backdrop_danger"
+	}
+}
+
+
+
+loadRooms();
+  
+</script>
+
+<style>
+
+body{
+	/*background: hsla(0, 87%, 79%, 1);*/
+	/*background: linear-gradient(90deg, hsla(0, 87%, 79%, 1) 0%, hsla(6, 77%, 85%, 1) 100%);*/
+	/*background: -moz-linear-gradient(90deg, hsla(0, 87%, 79%, 1) 0%, hsla(6, 77%, 85%, 1) 100%);*/
+	/*background: -webkit-linear-gradient(90deg, hsla(0, 87%, 79%, 1) 0%, hsla(6, 77%, 85%, 1) 100%);*/
+	/*filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#F89999", endColorstr="#F6C0BA", GradientType=1 );*/
+
+
+	background: hsla(18, 76%, 85%, 1);
+	background: linear-gradient(180deg, hsla(18, 76%, 85%, 1) 0%, hsla(203, 69%, 84%, 1) 100%);
+	background: -moz-linear-gradient(180deg, hsla(18, 76%, 85%, 1) 0%, hsla(203, 69%, 84%, 1) 100%);
+	background: -webkit-linear-gradient(180deg, hsla(18, 76%, 85%, 1) 0%, hsla(203, 69%, 84%, 1) 100%);
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#F6CFBE", endColorstr="#B9DCF2", GradientType=1 );
+
+	/*background: linear-gradient(180deg, hsla(18, 76%, 85%, 1) 0%, hsla(203, 69%, 84%, 1) 100%);*/
+	/*animation: gradient 10s infinite linear;*/
+	/*background-size: 400%;*/
+
+	/*background-color: #EEEEEE;*/
+
+	/*font-family: 'Nunito'*/
+	font-family: 'Wix Madefor Display', sans-serif;
+}
+@keyframes gradient {
+	0% {
+		background-position: 80% 0%;
+	}
+	50% {
+		background-position: 20% 100%;
+	}
+	100% {
+		background-position: 80% 0%;
+	}
+}
+
+
+
+
+.param_name{
+	flex-grow: 1;
+}
+
+.param_value{
+	text-align: left;
+	flex-basis: content;
+}
+
+.icon_block{
+	/*align-self: baseline;*/
+
+		/*font-family: 'Nunito';*/
+	/*font-style: normal;*/
+	/*font-weight: 500;*/
+	/*font-size: 20px;*/
+	/*line-height: 49px;*/
+
+	/*color: #FFFFFF;*/
+
+	/*width: 40px;*/
+	/*height: 50px;*/
+	/*display: inline-block;*/
+	/*float: left;*/
+	/*padding-left: 10px;*/
+
+	/*flex-basis: 20%;*/
+	/*display: none;*/
+}
+
+.item_block{
+	/*width: 190px; */
+
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+}
+
+
+.curtain {
+	/*text-align: center;*/
+	/*-border: 1px solid white;*/
+  	/*position: relative;*/
+  	/*top: -50px;*/
+
+	/*font-family: 'Nunito';*/
+	font-style: normal;
+	font-weight: 400;
+	font-size: 26px;
+	line-height: 49px;
+	/*-text-shadow: 4px 4px 4px #aaa;*/
+
+	/*color: #D4D4D4;*/
+
+  /*  height: 50px;*/
+  /*width: 170px;*/
+	display: inline-block;
+	float: left;
+}
+.backdrop_danger {
+  	background: #C44B4B;
+	filter: blur(20px);
+	border-radius: 20px;
+	height: 50px;
+  	width: 170px;
+}
+.backdrop_warning{
+  	background: #C97800;
+	filter: blur(20px);
+	border-radius: 20px;
+  height: 50px;
+  width: 170px;
+}
+.backdrop_none{
+  	background: #1E1E1E;
+  	  height: 50px;
+  width: 170px;
+}
+
+#roomName {
+
+	/*text-align: center;*/
+	/*-border: 1px solid white;*/
+
+	/*font-family: 'Nunito';*/
+	font-style: normal;
+	font-weight: bold;
+	font-size: 36px;
+	line-height: 49px;
+	/*-text-shadow: 4px 4px 4px #aaa;*/
+
+	/*color: gray;*/
+	padding-bottom: 15px;
+  
+    /*width: 270px;*/
+}
+.main_container{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 50px 50px;
+	padding: 50px;
+}
+
+
+.room_block{
+	/*opacity: 70.5%;*/
+
+	background-color: #fff;
+	border-radius: 30px;
+	padding: 40px;
+	min-width: 370px;
+	max-width: 400px;
+	/*text-align: center;*/
+	/*display: inline-block;*/
+	/*float: left;*/
+	/*padding-right: 100px;*/
+}
+.shadow {
+	box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+}
+</style>
+</head>
+<body>
+
+
+<div class="main_container">
+
+
+<div class="room_block shadow">
+
+
+	<div id="roomName">Спальня</div>
+
+	<div style="padding-top: 5px">
+		<div class="item_block">
+			<div class="icon_block">
+<!--							<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">&lt;!&ndash;! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. &ndash;&gt;<path d="M160 64c-26.5 0-48 21.5-48 48V276.5c0 17.3-7.1 31.9-15.3 42.5C86.2 332.6 80 349.5 80 368c0 44.2 35.8 80 80 80s80-35.8 80-80c0-18.5-6.2-35.4-16.7-48.9c-8.2-10.6-15.3-25.2-15.3-42.5V112c0-26.5-21.5-48-48-48zM48 112C48 50.2 98.1 0 160 0s112 50.1 112 112V276.5c0 .1 .1 .3 .2 .6c.2 .6 .8 1.6 1.7 2.8c18.9 24.4 30.1 55 30.1 88.1c0 79.5-64.5 144-144 144S16 447.5 16 368c0-33.2 11.2-63.8 30.1-88.1c.9-1.2 1.5-2.2 1.7-2.8c.1-.3 .2-.5 .2-.6V112zM208 368c0 26.5-21.5 48-48 48s-48-21.5-48-48c0-20.9 13.4-38.7 32-45.3V208c0-8.8 7.2-16 16-16s16 7.2 16 16V322.7c18.6 6.6 32 24.4 32 45.3z"/></svg>-->
+				<div class="icon_block"><img src="thermometer.svg" width="30px"/></div>
+			</div>
+			<div class="curtain param_name">Температура</div>
+			<div class="curtain param_value"><span id="temperature1">23,5</span> º</div>
+		</div>
+
+
+		<div class="item_block">
+			<div class="icon_block"><img src="water-percent.svg" width="30px"/></div>
+			<div class="curtain param_name">Влажность</div>
+			<div class="curtain param_value"><span id="humidity1">0</span> %</div>
+		</div>
+
+
+		<div class="item_block">
+			<div class="icon_block"><img src="cloud.svg" width="24px" style="padding-right: 3px; padding-left: 3px"/></div>
+			<div class="curtain param_name">Воздух</div>
+			<div class="curtain param_value"><span id="co21">10000</span> ppm</div>
+		</div>
+	</div>
+
+
+</div>
+
+</div>
+<!--<div class="room_block shadow">-->
+
+
+<!--	<div id="roomName">Гостиная</div>-->
+
+<!--	<div class="item_block">-->
+<!--		<div class="icon_block">🌡</div>-->
+<!--		<div style="width: 150px; height: 50px; display: inline-block">-->
+<!--		  <div id="temperature_back2" class="backdrop_none">&nbsp;</div>-->
+<!--		  <div id="curtain"><span id="temperature2">0</span> º</div>-->
+<!--		</div>	-->
+<!--	</div>-->
+
+
+<!--	<div class="item_block">-->
+<!--		<div class="icon_block">💧</div>-->
+<!--		<div style="width: 150px; height: 50px; display: inline-block">-->
+<!--		  <div id="humidity_back2" class="backdrop_none">&nbsp;</div>-->
+<!--		  <div id="curtain"><span id="humidity2">0</span> %</div>-->
+<!--		</div>	-->
+<!--	</div>-->
+
+
+<!--	<div class="item_block">-->
+<!--		<div class="icon_block">💨</div>-->
+<!--		<div style="width: 150px; height: 50px; display: inline-block">-->
+<!--		  <div id="co2_back2" class="backdrop_none">&nbsp;</div>-->
+<!--		  <div id="curtain"><span id="co22">0</span> ppm</div>-->
+<!--		</div>	-->
+<!--	</div>-->
+
+<!--</div>-->
+
+
+<!--<div style="width: 270px; text-align: center; display: inline-block; float: left; padding-right: 80px;">-->
+
+
+<!--		<div id="roomName">Ванная</div>-->
+
+<!--		<div class="item_block">-->
+<!--			<div class="icon_block">🌡</div>-->
+<!--			<div style="width: 150px; height: 50px; display: inline-block; ">-->
+<!--			  <div id="temperature_back3" class="backdrop_none">&nbsp;</div>-->
+<!--			  <div id="curtain"><span id="temperature3">0</span> º</div>-->
+<!--			</div>	-->
+<!--		</div>-->
+
+
+<!--		<div class="item_block">-->
+<!--			<div class="icon_block">💧</div>-->
+<!--			<div style="width: 150px; height: 50px; display: inline-block">-->
+<!--			  <div id="humidity_back3" class="backdrop_none">&nbsp;</div>-->
+<!--			  <div id="curtain"><span id="humidity3">0</span> %</div>-->
+<!--			</div>	-->
+<!--		</div>-->
+
+<!--</div>-->
+
+
+<!--<div style="width: 270px; text-align: center; display: inline-block; float: left; ">-->
+
+
+<!--		<div id="roomName">Кухня</div>-->
+
+<!--		<div class="item_block">-->
+<!--			<div class="icon_block">🌡</div>-->
+<!--			<div style="width: 150px; height: 50px; display: inline-block">-->
+<!--			  <div id="temperature_back4" class="backdrop_none">&nbsp;</div>-->
+<!--			  <div id="curtain"><span id="temperature4">0</span> º</div>-->
+<!--			</div>	-->
+<!--		</div>-->
+
+
+<!--		<div class="item_block">-->
+<!--			<div class="icon_block">💧</div>-->
+<!--			<div style="width: 150px; height: 50px; display: inline-block">-->
+<!--			  <div id="humidity_back4" class="backdrop_none">&nbsp;</div>-->
+<!--			  <div id="curtain"><span id="humidity4">0</span> %</div>-->
+<!--			</div>	-->
+<!--		</div>-->
+
+
+<!--		<div class="item_block">-->
+<!--			<div class="icon_block">💨</div>-->
+<!--			<div style="width: 150px; height: 50px; display: inline-block">-->
+<!--			  <div id="co2_back4" class="backdrop_none">&nbsp;</div>-->
+<!--			  <div id="curtain"><span id="co24">0</span> ppm</div>-->
+<!--			</div>	-->
+<!--		</div>-->
+
+<!--</div>-->
+
+</body>
+</html>
